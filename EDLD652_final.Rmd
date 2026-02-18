@@ -15,6 +15,8 @@ library(here)
 # Import Data
 ```{r}
 smart_location <- import(here("data", "EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv")) #smart location database and walkability index
+
+crash <- import(here("FARS2019NationalCSV", "accident.csv")) #crash data
 ```
 
 # Clean Data
@@ -26,4 +28,7 @@ walkability <- smart_location %>%
          NatWalkInd, 
          TotEmp, E5_Ret, E5_Off, E5_Ind, E5_Svc, E5_Ent,
          E_LowWageWk, E_MedWageWk, E_HiWageWk)
+
+crash <- crash %>% 
+  select(STATENAME, RUR_URBNAME, HARM_EVNAME, FATALS)
 ```
