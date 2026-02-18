@@ -1,0 +1,29 @@
+---
+title: "EDLD652_final"
+author: "Erika Davis, Cheyna Warner, and Kyla Brannigan"
+date: "2026-02-18"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rio)
+library(tidyverse)
+library(here)
+```
+
+# Import Data
+```{r}
+smart_location <- import(here("data", "EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv")) #smart location database and walkability index
+```
+
+# Clean Data
+```{r}
+#select measures of interest from smart_location
+walkability <- smart_location %>% 
+  select(CBSA, CBSA_Name, CBSA_POP, CBSA_EMP, CBSA_WRK, 
+         TotPop, AutoOwn0, AutoOwn1, AutoOwn2p, 
+         NatWalkInd, 
+         TotEmp, E5_Ret, E5_Off, E5_Ind, E5_Svc, E5_Ent,
+         E_LowWageWk, E_MedWageWk, E_HiWageWk)
+```
