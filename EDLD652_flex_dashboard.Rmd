@@ -12,28 +12,80 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-library(flexdashboard)
+knitr::opts_chunk$set(echo = TRUE)
+library(rio)
+library(tidyverse)
+library(here)
 ```
 
-Column {data-width=650}
------------------------------------------------------------------------
+# Importing and Clearning the Data
 
-### Chart A
+Here, we are importing and cleaning our data for analysis.
+```{r}
+smart_location <- import(here("data", "EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv")) #smart location database and walkability index 
+
+
+crash <- import(here("FARS2019NationalCSV", "accident.csv")) #crash data
+
+#select measures of interest from smart_location and crash data
+walkability <- smart_location %>% 
+  select(CBSA, CBSA_Name, CBSA_POP, CBSA_EMP, CBSA_WRK, 
+         TotPop, AutoOwn0, AutoOwn1, AutoOwn2p, 
+         NatWalkInd, 
+         TotEmp, E5_Ret, E5_Off, E5_Ind, E5_Svc, E5_Ent,
+         E_LowWageWk, E_MedWageWk, E_HiWageWk)
+
+crash <- crash %>% 
+  select(STATENAME, RUR_URBNAME, HARM_EVNAME, FATALS)
+```
+
+# Location and Walkability
+completed by Kyla Brannigan
+
+### Map with color gradient showing concentration of walkable cities
 
 ```{r}
 
 ```
 
-Column {data-width=350}
------------------------------------------------------------------------
 
-### Chart B
+# Pedestrian crash data and Walkability 
+completed by Erika Davis
+
+###  What is the relationship between walkability and pedestrian crash data? 
 
 ```{r}
 
 ```
 
-### Chart C
+### How are crash rates impacted by the most common mode of transportation? (bar graph)
+
+```{r}
+
+```
+ 
+
+# Lifestyle and Walkability
+completed by Cheyna Warner
+
+### do more walkable cities have fewer cars? 
+
+```{r}
+car_rates <- walkability %>% 
+  select(CBSA, CBSA_Name, AutoOwn0, AutoOwn1, AutoOwn2p,NatWalkInd) %>% 
+  group_by(CBSA, NatWalkInd) %>% 
+  mutate(car = sum(AutoOwn1+AutoOwn2p))
+
+car_rates$car <- as.factor(car_rates$car)
+
+car_rates_plot <- car_rates %>% 
+  ggplot(aes(x = car, y = NatWalkInd))+
+  geom_point()
+
+car_rates_plot
+```
+ 
+### are unemployment rates lower in walkable areas?
 
 ```{r}
 

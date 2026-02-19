@@ -16,6 +16,71 @@
 
 <link href="data:image/x-icon;" rel="icon" type="image/x-icon">
 
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
 
 <script type="text/javascript">
 window.FlexDashboardComponents = [];
@@ -2770,25 +2835,68 @@ window.FlexDashboardComponents.push({
 
 <div id="dashboard-container">
 
-<div id="column" class="section level2" data-width="650">
-<h2>Column</h2>
-<div id="chart-a" class="section level3">
-<h3>Chart A</h3>
+<div id="importing-and-clearning-the-data" class="section level1">
+<h1>Importing and Clearning the Data</h1>
+Here, we are importing and cleaning our data for analysis.
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>smart_location <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv&quot;</span>)) <span class="co">#smart location database and walkability index </span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>crash <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="fu">here</span>(<span class="st">&quot;FARS2019NationalCSV&quot;</span>, <span class="st">&quot;accident.csv&quot;</span>)) <span class="co">#crash data</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#select measures of interest from smart_location and crash data</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>walkability <span class="ot">&lt;-</span> smart_location <span class="sc">%&gt;%</span> </span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>  <span class="fu">select</span>(CBSA, CBSA_Name, CBSA_POP, CBSA_EMP, CBSA_WRK, </span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>         TotPop, AutoOwn0, AutoOwn1, AutoOwn2p, </span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>         NatWalkInd, </span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>         TotEmp, E5_Ret, E5_Off, E5_Ind, E5_Svc, E5_Ent,</span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>         E_LowWageWk, E_MedWageWk, E_HiWageWk)</span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>crash <span class="ot">&lt;-</span> crash <span class="sc">%&gt;%</span> </span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>  <span class="fu">select</span>(STATENAME, RUR_URBNAME, HARM_EVNAME, FATALS)</span></code></pre></div>
+</div>
+<div id="location-and-walkability" class="section level1">
+<h1>Location and Walkability</h1>
+<p>completed by Kyla Brannigan</p>
+<div id="map-with-color-gradient-showing-concentration-of-walkable-cities" class="section level3">
+<h3>Map with color gradient showing concentration of walkable
+cities</h3>
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
 </div>
 </div>
-<div id="column-1" class="section level2" data-width="350">
-<h2>Column</h2>
-<div id="chart-b" class="section level3">
-<h3>Chart B</h3>
+<div id="pedestrian-crash-data-and-walkability" class="section level1">
+<h1>Pedestrian crash data and Walkability</h1>
+<p>completed by Erika Davis</p>
+<div id="what-is-the-relationship-between-walkability-and-pedestrian-crash-data" class="section level3">
+<h3>What is the relationship between walkability and pedestrian crash
+data?</h3>
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
 </div>
-<div id="chart-c" class="section level3">
-<h3>Chart C</h3>
+<div id="how-are-crash-rates-impacted-by-the-most-common-mode-of-transportation-bar-graph" class="section level3">
+<h3>How are crash rates impacted by the most common mode of
+transportation? (bar graph)</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+</div>
+</div>
+<div id="lifestyle-and-walkability" class="section level1">
+<h1>Lifestyle and Walkability</h1>
+<p>completed by Cheyna Warner</p>
+<div id="do-more-walkable-cities-have-fewer-cars" class="section level3">
+<h3>do more walkable cities have fewer cars?</h3>
+<div class="knitr-options" data-fig-width="576" data-fig-height="460">
+
+</div>
+</div>
+<div id="are-unemployment-rates-less-in-walkable-areas" class="section level3">
+<h3>are unemployment rates less in walkable areas?</h3>
 <div class="knitr-options" data-fig-width="576" data-fig-height="460">
 
 </div>
