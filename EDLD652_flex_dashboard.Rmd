@@ -1,0 +1,41 @@
+---
+title: "Walkability Index"
+authors: Cheyna Warner, Erika Davis, & Kyla Brannigan
+output:
+  flexdashboard::flex_dashboard:
+    theme:
+      version: 4
+      bg: "#FFF5F5"
+      fg: "#000000" 
+      primary: "#5E9C07"
+
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Chart A
+
+```{r}
+
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
+
