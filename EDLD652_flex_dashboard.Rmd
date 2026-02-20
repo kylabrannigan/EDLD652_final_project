@@ -35,16 +35,17 @@ walkability <- smart_location %>%
          TotEmp, E5_Ret, E5_Off, E5_Ind, E5_Svc, E5_Ent,
          E_LowWageWk, E_MedWageWk, E_HiWageWk)
 
+capitals_list <- c("Montgomery, AL", "Juneua, AK", "Phoenix, AZ", "Little Rock, AK", "Sacramento, CA", "Denver, CO", "Hartford, CT", "Dover, DE", "Tallahassee, FL", "Atlanta, GA", "Honolulu, HI", "Boise, ID", "Springfield, MO", "Indianapolis, IN", "Des Moines, ID", "Topeka, KS", "Frankfort, KY", "Baton Rouge, LA", "Annapolis, MD", "Boston, MA", "Lansing, MI", "Saint Paul, MN", "Jackson, MS", "Jefferson City, MO", "Helena, MT", "Lincon, NE", "Carson City, NV", "Concord, NH", "Trenton, NJ", "Santa Fe, NM", "Albany, NY", "Raleigh, NC", "Bismarck, ND", "Coloumbus, OH", "Oklahoma City, OK", "Salem, OR", "Harrisburg, PA", "Providence, RI", "Columbia, SC", "Pierre, SD", "Nashville, TN", "Austin, TX","Salt Lake City, UT", "Montpelier, VT", "Richmond, VA", "Olympia, WA", "Charleston, WV", "Madison, WI", "Cheyenne, WY")
+
+walkability <- walkability %>% # only selecting data for state capitals
+  filter(CBSA_Name %in% capitals_list)
+
 walkability$City <- gsub(",.*$", "", walkability$CBSA_Name) # make new col that indicates city
 walkability$State <- sub("^.*?, \\s*", "", walkability$CBSA_Name) # make new col that indicates state
 
-states_list <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN","TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY")
-
-walkability <- walkability %>%
-  filter(State %in% states_list)
-
-walkability <- walkability %>% 
-  mutate()
+city_walkability <- walkability %>% #walkability for each city
+  group_by(City) %>% 
+  summarise(mean_walk = mean(NatWalkInd))
 
 # Crash Data Filtering
 crash <- crash %>% 
@@ -85,21 +86,43 @@ completed by Cheyna Warner
 ```{r}
 car_rates <- walkability %>% 
   select(CBSA, CBSA_Name, AutoOwn0, AutoOwn1, AutoOwn2p,NatWalkInd, City, State) %>% 
-  group_by(State) %>% 
-  mutate(car = sum(AutoOwn1+AutoOwn2p))
+  group_by(CBSA_Name) %>% 
+  mutate(car = sum(AutoOwn1+AutoOwn2p),
+         mean_walk = mean(NatWalkInd))
 
-car_rates$car <- as.factor(car_rates$car)
+car_rates <- car_rates[!duplicated(car_rates$CBSA_Name), ]
 
-meow <- car_rates %>% 
-  ggplot(aes(x = NatWalkInd))+
-  geom_histogram()
+car_rates_plot <- car_rates %>% 
+  ggplot(aes(x = mean_walk, y = car))+
+  geom_point(aes(color = City)) +
+  geom_smooth(method ="lm", color = "black", fill = "pink")+
+  theme_minimal()+
+  labs(title = "Relationship between walkability and number of households that own over 1 car",
+       x= "Walkability",
+       y = "Number of Households wiith > 1 car")
 
-meow
+car_rates_plot
 ```
  
 ### are unemployment rates lower in walkable areas?
 
 ```{r}
+employment_rates <- walkability %>% 
+  select(CBSA, CBSA_Name, TotEmp, E5_Ret, E5_Off, E5_Ind, E5_Ind, E5_Svc, E5_Ent, State, City, NatWalkInd) %>% 
+  group_by(CBSA_Name) %>% 
+  mutate(mean_walk = mean(NatWalkInd))
 
+employment_rates <- employment_rates[!duplicated(employment_rates$CBSA_Name), ]
+
+employment_rates_plot <- employment_rates %>% 
+  ggplot(aes(x = mean_walk, y = TotEmp))+
+  geom_point(aes(color = City)) +
+  geom_smooth(method ="lm", color = "black", fill = "pink")+
+  theme_minimal()+
+  labs(title = "Relationship between walkability and employment rates",
+       x= "Walkability",
+       y = "Employment Rate")
+
+employment_rates_plot
 ```
 
