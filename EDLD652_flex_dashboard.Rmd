@@ -43,6 +43,9 @@ states_list <- c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "FL", "GA", "HI
 walkability <- walkability %>%
   filter(State %in% states_list)
 
+walkability <- walkability %>% 
+  mutate()
+
 # Crash Data Filtering
 crash <- crash %>% 
   select(STATENAME, RUR_URBNAME, HARM_EVNAME, FATALS)
@@ -82,16 +85,16 @@ completed by Cheyna Warner
 ```{r}
 car_rates <- walkability %>% 
   select(CBSA, CBSA_Name, AutoOwn0, AutoOwn1, AutoOwn2p,NatWalkInd, City, State) %>% 
-  group_by(City, NatWalkInd) %>% 
+  group_by(State) %>% 
   mutate(car = sum(AutoOwn1+AutoOwn2p))
 
 car_rates$car <- as.factor(car_rates$car)
 
-car_rates_plot <- car_rates %>% 
-  ggplot(aes(x = car, fill = State))+
-  geom_bar()
+meow <- car_rates %>% 
+  ggplot(aes(x = NatWalkInd))+
+  geom_histogram()
 
-car_rates_plot
+meow
 ```
  
 ### are unemployment rates lower in walkable areas?
