@@ -19,29 +19,34 @@ library(here)
 ```
 
 # Importing and Clearning the Data
+This chunk was used initially to clean the raw data, but for deployment the data file is too large to put on github and must be unzipped to run as a webpage. 
+```{r}
+# Walkability Data Cleaning
+#smart_location <- import(here("data", "EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv")) #smart location database and walkability index. 
+
+#walkability <- smart_location %>% 
+#  select(CBSA, CBSA_Name, CBSA_POP, CBSA_EMP, CBSA_WRK, # select col of interest
+#         TotPop, AutoOwn0, AutoOwn1, AutoOwn2p, 
+#         NatWalkInd, 
+#         TotEmp, E5_Ret, E5_Off, E5_Ind, E5_Svc, E5_Ent,
+#         E_LowWageWk, E_MedWageWk, E_HiWageWk)
+
+#capitals_list <- c("Montgomery, AL", "Juneua, AK", "Phoenix, AZ", "Little Rock, AK", "Sacramento, CA", "Denver, CO", "Hartford, CT", "Dover, DE", "Tallahassee, FL", "Atlanta, GA", "Honolulu, HI", "Boise, ID", "Springfield, MO", "Indianapolis, IN", "Des Moines, ID", "Topeka, KS", "Frankfort, KY", "Baton Rouge, LA", "Annapolis, MD", "Boston, MA", "Lansing, MI", "Saint Paul, MN", "Jackson, MS", "Jefferson City, MO", "Helena, MT", "Lincon, NE", "Carson City, NV", "Concord, NH", "Trenton, NJ", "Santa Fe, NM", "Albany, NY", "Raleigh, NC", "Bismarck, ND", "Coloumbus, OH", "Oklahoma City, OK", "Salem, OR", "Harrisburg, PA", "Providence, RI", "Columbia, SC", "Pierre, SD", "Nashville, TN", "Austin, TX","Salt Lake City, UT", "Montpelier, VT", "Richmond, VA", "Olympia, WA", "Charleston, WV", "Madison, WI", "Cheyenne, WY")
+
+#walkability <- walkability %>% # only selecting data for state capitals
+#  filter(CBSA_Name %in% capitals_list)
+
+#walkability$City <- gsub(",.*$", "", walkability$CBSA_Name) # make new col that indicates city
+#walkability$State <- sub("^.*?, \\s*", "", walkability$CBSA_Name) # make new col that indicates state
+
+#write.csv(walkability, "Walkability.csv")
+```
 
 Here, we are importing and cleaning our data for analysis.
 ```{r}
-smart_location <- import(here("data", "EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv")) #smart location database and walkability index 
-
 crash <- import(here("FARS2019NationalCSV", "accident.csv")) #crash data
 
-# Walkability Data Cleaning
-
-walkability <- smart_location %>% 
-  select(CBSA, CBSA_Name, CBSA_POP, CBSA_EMP, CBSA_WRK, # select col of interest
-         TotPop, AutoOwn0, AutoOwn1, AutoOwn2p, 
-         NatWalkInd, 
-         TotEmp, E5_Ret, E5_Off, E5_Ind, E5_Svc, E5_Ent,
-         E_LowWageWk, E_MedWageWk, E_HiWageWk)
-
-capitals_list <- c("Montgomery, AL", "Juneua, AK", "Phoenix, AZ", "Little Rock, AK", "Sacramento, CA", "Denver, CO", "Hartford, CT", "Dover, DE", "Tallahassee, FL", "Atlanta, GA", "Honolulu, HI", "Boise, ID", "Springfield, MO", "Indianapolis, IN", "Des Moines, ID", "Topeka, KS", "Frankfort, KY", "Baton Rouge, LA", "Annapolis, MD", "Boston, MA", "Lansing, MI", "Saint Paul, MN", "Jackson, MS", "Jefferson City, MO", "Helena, MT", "Lincon, NE", "Carson City, NV", "Concord, NH", "Trenton, NJ", "Santa Fe, NM", "Albany, NY", "Raleigh, NC", "Bismarck, ND", "Coloumbus, OH", "Oklahoma City, OK", "Salem, OR", "Harrisburg, PA", "Providence, RI", "Columbia, SC", "Pierre, SD", "Nashville, TN", "Austin, TX","Salt Lake City, UT", "Montpelier, VT", "Richmond, VA", "Olympia, WA", "Charleston, WV", "Madison, WI", "Cheyenne, WY")
-
-walkability <- walkability %>% # only selecting data for state capitals
-  filter(CBSA_Name %in% capitals_list)
-
-walkability$City <- gsub(",.*$", "", walkability$CBSA_Name) # make new col that indicates city
-walkability$State <- sub("^.*?, \\s*", "", walkability$CBSA_Name) # make new col that indicates state
+walkability <- import(here("Walkability.csv")) #cleaned walkability data
 
 city_walkability <- walkability %>% #walkability for each city
   group_by(City) %>% 
