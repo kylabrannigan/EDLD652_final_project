@@ -21,17 +21,17 @@ library(here)
 This chunk was used initially to clean the raw data, but for deployment the data file is too large to put on github and must be unzipped to run as a webpage. 
 ```{r}
 # # Walkability Data Cleaning
-# smart_location <- import(here("EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv")) #smart location database and walkability index. 
+# smart_location <- import(here("EPA_SmartLocationDatabase_V3_Jan_2021_Final.csv")) #smart location database and walkability index.
 # 
-# walkability <- smart_location %>% 
-#   select(CBSA, CBSA_Name, CBSA_POP, CBSA_EMP, CBSA_WRK, # select col of interest
-#          TotPop, AutoOwn0, AutoOwn1, AutoOwn2p, 
-#          NatWalkInd, 
+# walkability <- smart_location %>%
+#   select(GEOID10, CBSA, CBSA_Name, CBSA_POP, CBSA_EMP, CBSA_WRK, # select col of interest
+#          TotPop, AutoOwn0, AutoOwn1, AutoOwn2p,
+#          NatWalkInd,
 #          TotEmp, E5_Ret, E5_Off, E5_Ind, E5_Svc, E5_Ent,
 #          E_LowWageWk, E_MedWageWk, E_HiWageWk)
 # 
-# OR_walkability <- walkability |> 
-#   filter(str_detect(CBSA_Name, " OR")) |> 
+# OR_walkability <- walkability |>
+#   filter(str_detect(CBSA_Name, " OR")) |>
 #   arrange(CBSA_Name)
 # write.csv(OR_walkability, "OR_walkability.csv")
 # 
