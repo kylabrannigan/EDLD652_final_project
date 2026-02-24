@@ -69,7 +69,43 @@ completed by Kyla Brannigan
 ### Map with color gradient showing concentration of walkable cities
 
 ```{r}
+# library-ing packages needed for mapping
+library(tigris)
+library(sf)
+```
 
+```{r}
+# get Oregon block group geometries from census
+or_bg <- block_groups(state = "OR", year = 2019, cb = TRUE)
+
+# aggregate walkability to county
+walk_summary <- OR_walkability %>%
+  group_by(CBSA, CBSA_Name) %>%
+  summarise(avg_walkability = mean(NatWalkInd, na.rm = TRUE),
+            total_pop = sum(TotPop, na.rm = TRUE))
+
+# get CBSA boundaries
+or_cbsa <- core_based_statistical_areas(year = 2019, cb = TRUE) %>%
+  filter(GEOID %in% unique(OR_walkability$CBSA))
+
+# join CBSA-level map
+or_cbsa_walk <- or_cbsa %>%
+  left_join(walk_summary, by = c("GEOID" = "CBSA"))
+
+# base Oregon outline
+or_state <- states(cb = TRUE) %>% filter(STUSPS == "OR")
+
+ggplot() +
+  geom_sf(data = or_state, fill = "grey90", color = "grey60") +
+  geom_sf(data = or_cbsa_walk, aes(fill = avg_walkability), color = "white", size = 0.3) +
+  scale_fill_viridis_c(name = "Avg. Walk\nIndex", option = "plasma", na.value = "grey80") +
+  labs(
+    title = "Oregon Walkability by Metro Area",
+    subtitle = "National Walkability Index (EPA Smart Location Database)",
+    caption = "Source: EPA Smart Location Database"
+  ) +
+  theme_void() +
+  theme(legend.position = "right")
 ```
 
 
