@@ -66,45 +66,82 @@ crash <- crash %>%
   select(STATENAME, RUR_URBNAME, HARM_EVNAME, FATALS)
 ```
 
-# Location and Walkability
+# Worker Wage Concentration and Walkability
 completed by Kyla Brannigan
 
-### Map with color gradient showing concentration of walkable cities
-
 ```{r}
-# library-ing packages needed for mapping
-library(tigris)
-library(sf)
+### Initial plan: Map with color gradient showing concentration of walkable cities
+# I can't get this to work right now so I'm pivoting a bit, but I will try again later (I really want to display a map)
+# # library-ing packages needed for mapping
+# library(tigris)
+# library(sf)
 ```
 
 ```{r}
-# Load walkability data
-walk <- OR_walkability
-  mutate(GEOID10 = formatC(as.numeric(GEOID10), format = "fg", flag = "0") |> 
-           str_pad(width = 12, side = "left", pad = "0"))
+# # Load walkability data
+# walk <- OR_walkability
+#   mutate(GEOID10 = formatC(as.numeric(GEOID10), format = "fg", flag = "0") |> 
+#            str_pad(width = 12, side = "left", pad = "0"))
+# 
+# # Get Oregon block group geometries
+# or_bg <- block_groups(state = "OR", year = 2019, cb = TRUE)
+# 
+# # Join walkability data to block group geometries
+# or_bg_walk <- or_bg |> 
+#   left_join(walk, by = c("GEOID" = "GEOID10"))
+# 
+# # Plot
+# ggplot(or_bg_walk) +
+#   geom_sf(aes(fill = NatWalkInd), color = NA) +
+#   scale_fill_viridis_c(
+#     name = "Walkability\nIndex",
+#     option = "plasma",
+#     na.value = "grey80"
+#   ) +
+#   labs(
+#     title = "Oregon Walkability by Block Group",
+#     subtitle = "National Walkability Index (EPA Smart Location Database)",
+#     caption = "Source: EPA Smart Location Database"
+#   ) +
+#   theme_void() +
+#   theme(legend.position = "right")
+```
 
-# Get Oregon block group geometries
-or_bg <- block_groups(state = "OR", year = 2019, cb = TRUE)
+```{r}
+# looking at concentration of low, med, and high wage workers and walkability
 
-# Join walkability data to block group geometries
-or_bg_walk <- or_bg |> 
-  left_join(walk, by = c("GEOID" = "GEOID10"))
+# adding the pre-defined categories for walkability to make it more interpretable rather than the continuous scale
+wage_walkability <- walkability |> 
+  filter(!is.na(NatWalkInd), !is.na(E_LowWageWk), !is.na(E_MedWageWk), !is.na(E_HiWageWk)) |> 
+  mutate(WalkCat = cut(NatWalkInd,
+    breaks = c(0, 5.75, 10.5, 15.25, 20),
+    labels = c("Least\nWalkable\n(1–5.75)", "Below Avg\n(5.75–10.5)", "Above Avg\n(10.5–15.25)", "Most\nWalkable\n(15.25–20)"), 
+    include.lowest = TRUE
+  ))
 
-# Plot
-ggplot(or_bg_walk) +
-  geom_sf(aes(fill = NatWalkInd), color = NA) +
-  scale_fill_viridis_c(
-    name = "Walkability\nIndex",
-    option = "plasma",
-    na.value = "grey80"
-  ) +
-  labs(
-    title = "Oregon Walkability by Block Group",
-    subtitle = "National Walkability Index (EPA Smart Location Database)",
-    caption = "Source: EPA Smart Location Database"
-  ) +
-  theme_void() +
-  theme(legend.position = "right")
+# summarize by walkability bin (doing median instead of mean to help it not be skewed by places like NYC or rural areas)
+summary_wage_walkability <- wage_walkability |> 
+  group_by(WalkCat) |> 
+  summarise(
+    Low  = median(E_LowWageWk, na.rm = TRUE),
+    Med  = median(E_MedWageWk, na.rm = TRUE),
+    High = median(E_HiWageWk,  na.rm = TRUE),
+    .groups = "drop"
+  ) |> 
+  pivot_longer(cols = c(Low, Med, High),
+               names_to = "WageGroup",
+               values_to = "MedianWorkers") |> 
+  mutate(WageGroup = factor(WageGroup, levels = c("Low", "Med", "High")))
+```
+
+```{r}
+wage_walkability_plot <- ggplot(summary_wage_walkability, aes(x = WalkCat, y = MedianWorkers, fill = WageGroup)) +
+  geom_col(position = position_dodge(width = 0.75), width = 0.65, alpha = 0.92) +
+  labs(title    = "Worker Wage Concentration by Neighborhood Walkability",
+       subtitle = "Median number of workers per census block group across walkability quartiles") +
+  theme_minimal(base_size = 13) 
+
+wage_walkability_plot
 ```
 
 
