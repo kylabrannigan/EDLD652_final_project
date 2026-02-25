@@ -157,9 +157,42 @@ ggplot(crash_df, aes(x = mean_walk, y = total_fatals)) +
 
 ```
 
-### How are crash rates impacted by the most common mode of transportation? (bar graph)
+### Do rural or urban places have more traffic fatalities? 
 
 ```{r}
+
+crash_filtered <- crash %>% 
+  filter(RUR_URBNAME %in% c("Rural", "Urban")) 
+  
+ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
+  geom_bar(stat = "summary", fun = "sum") +
+  scale_fill_manual(values = c("Rural" = "forestgreen", "Urban" = "pink")) +
+  labs(
+    title = "Total Fatalities: Rural vs. Urban",
+    x = "Location Type",
+    y = "Total Fatalities",
+    fill = "Legend"
+  ) +
+  theme_minimal()
+
+
+ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
+  geom_bar(stat = "summary", fun = "sum") +
+  # This line creates the separate panels for each state
+  facet_wrap(~ `STATENAME`) + 
+  scale_fill_manual(values = c("Rural" = "forestgreen", "Urban" = "pink")) +
+  labs(
+    title = "Fatalities by State: Rural vs. Urban",
+    x = "Location Type",
+    y = "Total Fatalities",
+    fill = "Legend"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_blank(),
+    axis.title.x = element_blank(),
+    axis.ticks.x = element_blank()
+  )
 
 ```
  
