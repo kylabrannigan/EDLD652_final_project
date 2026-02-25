@@ -15,6 +15,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(rio)
 library(tidyverse)
 library(here)
+library(ggplot2)
+library(ggrepel) 
+
 ```
 
 # Importing and Clearning the Data
@@ -111,6 +114,46 @@ completed by Erika Davis
 ###  What is the relationship between walkability and pedestrian crash data? 
 
 ```{r}
+
+#adding a state column to the city_walkability as the ped. crashes only has states
+
+state_vector <- c("Louisana", "North Dakota", "Nevada", "West Virgina", "Wyoming", "South Carolina", "New Hampshire", "Delaware", "Kentucky", "Montana", "Mississippi", "Missouri", "Wisconsin", "Alabama", "Oklahoma", "South Dakota", "Virginia", "Oregon", "Utah", "New Mexico", "Missouri", "Florida", "Kansas")
+
+state_walkability <- city_walkability %>%
+  mutate(state = state_vector)
+
+#summarizing fatalities by state
+state_fatalities <- crash %>%
+  group_by(STATENAME) %>%
+  summarize(total_fatals = sum(FATALS, na.rm = TRUE))
+
+crash_df <- state_walkability %>%
+  left_join(state_fatalities, by = c("state" = "STATENAME"))
+
+#defining outliers so i can label them in the plot
+crash_df <- crash_df %>%
+  mutate(label_state = case_when(
+    total_fatals > quantile(total_fatals, 0.95, na.rm = TRUE) ~ state,       #top 5% fatalities
+    mean_walk > quantile(mean_walk, 0.95, na.rm = TRUE) ~ state, #top 5% walkability
+    mean_walk < quantile(mean_walk, 0.05, na.rm = TRUE) ~ state, #bottom 5% walkability
+    TRUE ~ NA_character_                                                     
+  ))
+
+#plot
+ggplot(crash_df, aes(x = mean_walk, y = total_fatals)) +
+  geom_point(color = "steelblue", size = 3, alpha = 0.7) +
+  geom_text_repel(aes(label = label_state), 
+                  box.padding = 0.5, 
+                  point.padding = 0.3, 
+                  segment.color = 'grey50') +
+  geom_smooth(method = "lm", color = "pink", linetype = "dashed", se = FALSE) +
+  labs(
+    title = "Walkability vs. Pedestrian Fatalities by State",
+    subtitle = "Labels shown for statistical extremes (top/bottom 5%)",
+    x = "Walkability Score",
+    y = "Total Fatalities"
+  ) +
+  theme_minimal()
 
 ```
 
