@@ -81,7 +81,7 @@ crash <- crash %>%
 
 Lifestyle and Walkability
 ======
-completed by Kyla Brannigan and Cheyna Warner
+Completed by Kyla Brannigan and Cheyna Warner
 
 Column {.tabset}
 -------------------------------------
@@ -124,7 +124,7 @@ Column {.tabset}
 #   theme(legend.position = "right")
 ```
 
-### Worker Wage Concentration
+### Wage vs. Walkability (v1)
 
 ```{r, echo=FALSE}
 # looking at concentration of low, med, and high wage workers and walkability
@@ -154,14 +154,36 @@ summary_wage_walkability <- wage_walkability |>
 ```
 
 ```{r, echo=FALSE}
-wage_walkability_plot <- ggplot(summary_wage_walkability, aes(x = WalkCat, y = MedianWorkers, fill = WageGroup)) +
+wage_walkability_plot <- summary_wage_walkability |> 
+  ggplot(aes(x = WalkCat, y = MedianWorkers, fill = WageGroup)) +
   geom_col(position = position_dodge(width = 0.75), width = 0.65, alpha = 0.92) +
   labs(title    = "Worker Wage Concentration by Neighborhood Walkability",
        subtitle = "Median number of workers per census block group across walkability quartiles") +
-  theme_minimal(base_size = 13) 
+  theme(text = element_text(family = "Quicksand")) #make font macth the dashboard 
 
 wage_walkability_plot
 ```
+
+### Wage vs. Walkability (v2)
+```{r, echo=FALSE}
+wage_colors <- c("Low" = "#88CCEE", "Med" = "#DDCC77", "High" = "#CC6677") # color-blind friendly!
+
+wage_walkability_plot <- summary_wage_walkability |> 
+  ggplot(aes(x = WalkCat, y = MedianWorkers, fill = WageGroup)) +
+  scale_fill_manual(values = wage_colors,
+                    labels = c("Low", "Medium", "High"),
+                    name = "Wage Group") +
+  geom_col(position = position_dodge(width = 0.75), width = 0.65, alpha = 0.92) +
+  labs(title    = "Worker Wage Concentration by Neighborhood Walkability",
+       subtitle = "Median number of workers per census block group across\nwalkability quartiles",
+       x        = "National Walkability Index",
+       y        = "Median Number of Workers\n(per census block)") +
+  theme_minimal(base_size = 10) +
+  theme(text = element_text(family = "Quicksand")) #make font macth the dashboard 
+
+wage_walkability_plot
+```
+
 
 Column {.tabset}
 -------------------------------------
@@ -210,12 +232,10 @@ employment_rates_plot2 <- employment_rates %>%
 employment_rates_plot2
 ```
 
-Column {.tabset}
--------------------------------------
 
 Number of Cars 
 ======
-completed by Cheyna Warner
+Completed by Cheyna Warner
 
 Column {.tabset}
 -------------------------------------
@@ -267,7 +287,7 @@ car_rates_plot2
 
 Pedestrian crash data and Walkability 
 ====== 
-completed by Erika Davis
+Completed by Erika Davis
 
 Column {.tabset}
 --------------------------------------
@@ -363,5 +383,3 @@ ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
   )
 ```
 
-Column {.tabset}
--------------------------------------
