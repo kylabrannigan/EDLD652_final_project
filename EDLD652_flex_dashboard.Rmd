@@ -5,8 +5,9 @@ output:
   flexdashboard::flex_dashboard:
     theme:
       version: 4
-      bg: "#FFF5F5"
+      bg: "#FFFFFF"
       fg: "#000000" 
+      primary: "#82BDAB"
       navbar-bg: "#FFCFE5"
       base_font: 
         google: Quicksand
@@ -27,7 +28,12 @@ library(tidyverse)
 library(here)
 library(ggplot2)
 library(ggrepel) 
+library(showtext)
 
+font_add_google("Quicksand") # Add googoo Font
+showtext_auto()
+
+theme_set(theme_minimal(base_family = "Quicksand"))
 ```
 
 ```{r, echo=FALSE}
@@ -77,6 +83,9 @@ Lifestyle and Walkability
 ======
 completed by Kyla Brannigan and Cheyna Warner
 
+Column {.tabset}
+-------------------------------------
+
 ```{r, echo=FALSE}
 ### Initial plan: Map with color gradient showing concentration of walkable cities
 # I can't get this to work right now so I'm pivoting a bit, but I will try again later (I really want to display a map)
@@ -115,7 +124,7 @@ completed by Kyla Brannigan and Cheyna Warner
 #   theme(legend.position = "right")
 ```
 
-### How does Worker Wage Concentration and Walkability 
+### Worker Wage Concentration
 
 ```{r, echo=FALSE}
 # looking at concentration of low, med, and high wage workers and walkability
@@ -154,54 +163,8 @@ wage_walkability_plot <- ggplot(summary_wage_walkability, aes(x = WalkCat, y = M
 wage_walkability_plot
 ```
 
-### do more walkable cities have fewer cars? 
-
-```{r, echo=FALSE}
-car_rates <- walkability %>% 
-  select(CBSA, CBSA_Name, AutoOwn0, AutoOwn1, AutoOwn2p,NatWalkInd, City, State) %>% 
-  group_by(CBSA_Name) %>% 
-  mutate(car = sum(AutoOwn1+AutoOwn2p),
-         mean_walk = mean(NatWalkInd))
-
-car_rates <- car_rates[!duplicated(car_rates$CBSA_Name), ]
-
-car_rates_plot1 <- car_rates %>% 
-  ggplot(aes(x = mean_walk, y = car))+
-  geom_point(aes(color = City)) +
-  geom_smooth(method ="lm")
-car_rates_plot1
-
-car_rates_plot2 <- car_rates %>% 
-  ggplot(aes(x = mean_walk, y = car))+
-  geom_point(aes(color = City)) +
-  geom_smooth(method ="lm", color = "black", fill = "pink")
-
-car_rates_plot2
-
-car_rates_plot3 <- car_rates %>% 
-  ggplot(aes(x = mean_walk, y = car))+
-  geom_point(aes(color = City)) +
-  geom_smooth(method ="lm", color = "black", fill = "pink")+
-  theme_minimal()+
-  labs(title = "Relationship between walkability and number of households that own over 1 car",
-       x= "Walkability",
-       y = "Number of Households wiith > 1 car")
-
-car_rates_plot3
-
-car_rates_plot_final <- car_rates %>% 
-  ggplot(aes(x = mean_walk, y = car))+
-  geom_point(aes(color = City)) +
-  geom_smooth(method ="lm", color = "black", fill = "pink")+
-  theme_minimal()+
-  labs(title = "Relationship between walkability and number of households that own over 1 car",
-       x= "Walkability",
-       y = "Number of Households wiith > 1 car")
-
-car_rates_plot_final
-```
-
-### are unemployment rates lower in walkable areas?
+Column {.tabset}
+-------------------------------------
 
 ```{r, echo=FALSE}
 employment_rates <- walkability %>% 
@@ -210,32 +173,10 @@ employment_rates <- walkability %>%
   mutate(mean_walk = mean(NatWalkInd))
 
 employment_rates <- employment_rates[!duplicated(employment_rates$CBSA_Name), ]
+```
 
-employment_rates_plot1 <- employment_rates %>% 
-  ggplot(aes(x = mean_walk, y = TotEmp))+
-  geom_point(aes(color = City)) +
-  geom_smooth(method ="lm")
-  
-employment_rates_plot1
-
-employment_rates_plot2 <- employment_rates %>% 
-  ggplot(aes(x = mean_walk, y = TotEmp))+
-  geom_point(aes(color = City)) +
-  geom_smooth(method ="lm", color = "black", fill = "pink")
-
-employment_rates_plot2
-
-employment_rates_plot3 <- employment_rates %>% 
-  ggplot(aes(x = mean_walk, y = TotEmp))+
-  geom_point(aes(color = City)) +
-  geom_smooth(method ="lm", color = "black", fill = "pink")+
-  theme_minimal()+
-  labs(title = "Relationship between walkability and employment rates",
-       x= "Walkability",
-       y = "Employment Rate")
-
-employment_rates_plot3
-
+### Unemployment Rates
+```{r, echo=FALSE}
 employment_rates_plot <- employment_rates %>% 
   ggplot(aes(x = mean_walk, y = TotEmp))+
   geom_point(aes(color = City)) +
@@ -243,17 +184,93 @@ employment_rates_plot <- employment_rates %>%
   theme_minimal()+
   labs(title = "Relationship between walkability and employment rates",
        x= "Walkability",
-       y = "Employment Rate")
+       y = "Employment Rate")+
+  theme(text = element_text(family = "Quicksand")) #make font macth the dashboard 
 
 employment_rates_plot
+```
+
+### Unemployment Rates Plot 1
+```{r, echo=FALSE}
+employment_rates_plot1 <- employment_rates %>% 
+  ggplot(aes(x = mean_walk, y = TotEmp))+
+  geom_point(aes(color = City)) +
+  geom_smooth(method ="lm")
+  
+employment_rates_plot1
+```
+
+### Unemployment Rates Plot 2
+```{r, echo=FALSE}
+employment_rates_plot2 <- employment_rates %>% 
+  ggplot(aes(x = mean_walk, y = TotEmp))+
+  geom_point(aes(color = City)) +
+  geom_smooth(method ="lm", color = "black", fill = "pink")
+
+employment_rates_plot2
+```
+
+Column {.tabset}
+-------------------------------------
+
+Number of Cars 
+======
+completed by Cheyna Warner
+
+Column {.tabset}
+-------------------------------------
+```{r, echo=FALSE}
+car_rates <- walkability %>% 
+  select(CBSA, CBSA_Name, AutoOwn0, AutoOwn1, AutoOwn2p,NatWalkInd, City, State) %>% 
+  group_by(CBSA_Name) %>% 
+  mutate(car = sum(AutoOwn1+AutoOwn2p),
+         mean_walk = mean(NatWalkInd))
+
+car_rates <- car_rates[!duplicated(car_rates$CBSA_Name), ]
+```
+
+```{r, echo=FALSE}
+car_rates_plot_final <- car_rates %>% 
+  ggplot(aes(x = mean_walk, y = car))+
+  geom_point(aes(color = City)) +
+  geom_smooth(method ="lm", color = "black", fill = "pink")+
+  theme_minimal()+
+  labs(title = "Relationship between walkability and number of households that own over 1 car",
+       x= "Walkability",
+       y = "Number of Households wiith > 1 car")+
+  theme(text = element_text(family = "Quicksand"))
+
+car_rates_plot_final
+```
+
+### Cars plot 1
+
+```{r, echo=FALSE}
+car_rates_plot1 <- car_rates %>% 
+  ggplot(aes(x = mean_walk, y = car))+
+  geom_point(aes(color = City)) +
+  geom_smooth(method ="lm")
+
+car_rates_plot1
+```
+
+### Cars plot 2
+
+```{r, echo=FALSE}
+car_rates_plot2 <- car_rates %>% 
+  ggplot(aes(x = mean_walk, y = car))+
+  geom_point(aes(color = City)) +
+  geom_smooth(method ="lm", color = "black", fill = "pink")
+
+car_rates_plot2
 ```
 
 Pedestrian crash data and Walkability 
 ====== 
 completed by Erika Davis
 
-Column {data-width=650}
-----------------------------
+Column {.tabset}
+--------------------------------------
 ### What is the relationship between walkability and pedestrian crash data? 
 
 ```{r, echo=FALSE}
@@ -300,8 +317,8 @@ ggplot(crash_df, aes(x = mean_walk, y = total_fatals)) +
 
 ```
 
-Column {data-width=350}
-----------------------------
+Column {.tabset}
+-------------------------------------
 
 ### Do rural or urban places have more traffic fatalities? 
 
@@ -322,8 +339,8 @@ ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
   theme_minimal()
 ```
 
-Column {data-width=350}
-----------------------------
+Column {.tabset}
+-------------------------------------
 ### Do rural or urban states have more traffic fatalities? 
 
 ```{r, echo=FALSE}
@@ -346,5 +363,5 @@ ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
   )
 ```
 
-Column {}
-----------------------------
+Column {.tabset}
+-------------------------------------
