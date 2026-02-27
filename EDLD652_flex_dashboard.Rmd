@@ -1,5 +1,5 @@
 ---
-title: "Walkability Index"
+title: "Walkability and Some Other Stuff :)"
 authors: Cheyna Warner, Erika Davis, & Kyla Brannigan
 output:
   flexdashboard::flex_dashboard:
@@ -8,7 +8,7 @@ output:
       bg: "#FFFFFF"
       fg: "#000000" 
       primary: "#82BDAB"
-      navbar-bg: "#FFCFE5"
+      navbar-bg: "#6bb599"
       base_font: 
         google: Quicksand
       heading_font:
@@ -79,8 +79,31 @@ crash <- crash %>%
   select(STATENAME, RUR_URBNAME, HARM_EVNAME, FATALS)
 ```
 
+<style>
+.sidebar h2 {
+  font-size: 16px; /* Adjust size as needed */
+}
+.sidebar {
+  font-size: 16px; /* Adjust size as needed */
+}
+</style>
+
+Column {.sidebar}
+==========================
+About our Data
+---------------
+Smart Location Database
+------------------------
+
+National Walkability Index
+----------------------------
+hello
+
+Pedestrian Crash Data
+--------------------------
+
 Lifestyle and Walkability
-======
+==========================
 Completed by Kyla Brannigan and Cheyna Warner
 
 Column {.tabset}
@@ -164,6 +187,7 @@ wage_walkability_plot <- summary_wage_walkability |>
 wage_walkability_plot
 ```
 
+
 ### Wage vs. Walkability (v2)
 ```{r, echo=FALSE}
 wage_colors <- c("Low" = "#88CCEE", "Med" = "#DDCC77", "High" = "#CC6677") # color-blind friendly!
@@ -234,7 +258,7 @@ employment_rates_plot2
 
 
 Number of Cars 
-======
+====================
 Completed by Cheyna Warner
 
 Column {.tabset}
@@ -286,7 +310,7 @@ car_rates_plot2
 ```
 
 Pedestrian crash data and Walkability 
-====== 
+=====================================
 Completed by Erika Davis
 
 Column {.tabset}
