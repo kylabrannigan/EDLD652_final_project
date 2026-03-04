@@ -305,6 +305,11 @@ car_rates_plot_final <- car_rates %>%
 car_rates_plot_final
 ```
 
+```{r, echo=FALSE}
+p_car_rates <- cor.test(car_rates$mean_walk, car_rates$car, method = "pearson")$p.value
+rho_car_rates <- cor.test(car_rates$mean_walk, car_rates$car, method = "pearson")$estimate
+```
+
 
 Column {.tabset}
 -------------------------------------
