@@ -104,7 +104,7 @@ Pedestrian Crash Data
 
 https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/
 
-Lifestyle and Walkability
+Wage and Walkability
 ==========================
 Completed by Kyla Brannigan and Cheyna Warner
 
@@ -211,6 +211,10 @@ wage_walkability_plot
 ```
 
 
+Employment and Walkability
+==========================
+Completed by Cheyna Warner
+
 Column {.tabset}
 -------------------------------------
 
@@ -230,7 +234,7 @@ employment_rates_plot <- employment_rates %>%
   geom_point(aes(color = City)) +
   geom_smooth(method ="lm", color = "black", fill = "pink")+
   theme_minimal()+
-  labs(title = "Relationship between walkability and employment rates",
+  labs(title = "Walkable cities experiences lower rates of unemployment",
        x= "Walkability",
        y = "Employment Rate")+
   theme(text = element_text(family = "Quicksand")) #make font macth the dashboard 
@@ -238,7 +242,17 @@ employment_rates_plot <- employment_rates %>%
 employment_rates_plot
 ```
 
-### Unemployment Rates Plot 1
+Column {.tabset}
+-------------------------------------
+### About 
+
+This plot shows the relationship between walkability and employment rates.
+
+Hypothesis: I hypothesize that unemployment rates will be greater in less walkable areas. 
+
+Conclusions: Walkability and unemployment rates have a significant, negative relationship. 
+
+### Unemployment Rates Plot v1
 ```{r, echo=FALSE}
 employment_rates_plot1 <- employment_rates %>% 
   ggplot(aes(x = mean_walk, y = TotEmp))+
@@ -248,7 +262,7 @@ employment_rates_plot1 <- employment_rates %>%
 employment_rates_plot1
 ```
 
-### Unemployment Rates Plot 2
+### Unemployment Rates Plot v2
 ```{r, echo=FALSE}
 employment_rates_plot2 <- employment_rates %>% 
   ggplot(aes(x = mean_walk, y = TotEmp))+
@@ -265,6 +279,7 @@ Completed by Cheyna Warner
 
 Column {.tabset}
 -------------------------------------
+
 ```{r, echo=FALSE}
 car_rates <- walkability %>% 
   select(CBSA, CBSA_Name, AutoOwn0, AutoOwn1, AutoOwn2p,NatWalkInd, City, State) %>% 
@@ -275,13 +290,14 @@ car_rates <- walkability %>%
 car_rates <- car_rates[!duplicated(car_rates$CBSA_Name), ]
 ```
 
+### Households with > 1 cars
 ```{r, echo=FALSE}
 car_rates_plot_final <- car_rates %>% 
   ggplot(aes(x = mean_walk, y = car))+
   geom_point(aes(color = City)) +
   geom_smooth(method ="lm", color = "black", fill = "pink")+
   theme_minimal()+
-  labs(title = "Relationship between walkability and number of households that own over 1 car",
+  labs(title = "Households have more cars in more walkable cities",
        x= "Walkability",
        y = "Number of Households wiith > 1 car")+
   theme(text = element_text(family = "Quicksand"))
@@ -289,7 +305,19 @@ car_rates_plot_final <- car_rates %>%
 car_rates_plot_final
 ```
 
-### Cars plot 1
+
+Column {.tabset}
+-------------------------------------
+### About
+
+This graph shows the relationship between walkability and number of households that own at least 1 car.
+
+Hypothesis: I hypothesize that people who live in walkable areas will have fewer cars. 
+
+Conclusions: Walkability and number of cars have a significant, positive relationship. 
+
+
+### Cars plot v1
 
 ```{r, echo=FALSE}
 car_rates_plot1 <- car_rates %>% 
@@ -300,7 +328,7 @@ car_rates_plot1 <- car_rates %>%
 car_rates_plot1
 ```
 
-### Cars plot 2
+### Cars plot v2
 
 ```{r, echo=FALSE}
 car_rates_plot2 <- car_rates %>% 
