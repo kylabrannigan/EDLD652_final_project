@@ -1,5 +1,5 @@
 ---
-title: "Walkability and Some Other Stuff :)"
+title: "Impact of Walkability"
 authors: Cheyna Warner, Erika Davis, & Kyla Brannigan
 output:
   flexdashboard::flex_dashboard:
@@ -34,6 +34,8 @@ font_add_google("Quicksand") # Add googoo Font
 showtext_auto()
 
 theme_set(theme_minimal(base_family = "Quicksand"))
+
+options(scipen=999) #disable scientific notation 
 ```
 
 ```{r, echo=FALSE}
@@ -90,25 +92,25 @@ crash <- crash %>%
 
 Column {.sidebar}
 ==========================
-About our Data
+**About Our Project**
 ---------------
 This project combines 2019 data from the Smart Location Database and Pedestrian Crash Data to provide a snapshot of how walkability infleunces multiple facets of life. Links to each database can be found below. 
 
-Smart Location Database (with Walkability Index)
+U.S. Environmental Protection Agency Smart Location Database (with Walkability Index)
 ------------------------
 
 https://catalog.data.gov/dataset/smart-location-database8
 
-Pedestrian Crash Data
+National Highway Safety Administration Pedestrian Crash Data
 --------------------------
 
 https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/
 
-Wage and Walkability
+Wage
 ==========================
 Completed by Kyla Brannigan and Cheyna Warner
 
-Column {.tabset}
+Column {.tabset .tabset-fade}
 -------------------------------------
 
 ```{r, echo=FALSE}
@@ -211,11 +213,11 @@ wage_walkability_plot
 ```
 
 
-Employment and Walkability
+Employment
 ==========================
 Completed by Cheyna Warner
 
-Column {.tabset}
+Column {data-width=550 .tabset .tabset-fade}
 -------------------------------------
 
 ```{r, echo=FALSE}
@@ -227,8 +229,9 @@ employment_rates <- walkability %>%
 employment_rates <- employment_rates[!duplicated(employment_rates$CBSA_Name), ]
 ```
 
-### Unemployment Rates
+### How does walkability impact employment rates?
 ```{r, echo=FALSE}
+
 employment_rates_plot <- employment_rates %>% 
   ggplot(aes(x = mean_walk, y = TotEmp))+
   geom_point(aes(color = City)) +
@@ -237,22 +240,31 @@ employment_rates_plot <- employment_rates %>%
   labs(title = "Walkable cities experience lower rates of unemployment",
        x= "Walkability",
        y = "Employment Rate")+
-  theme(text = element_text(family = "Quicksand")) #make font macth the dashboard 
+  theme(text = element_text(family = "Quicksand")) + #make font macth the dashboard 
+  theme(legend.position="bottom")+
+  theme(legend.key.size = unit(0.2, "cm")) 
 
 employment_rates_plot
 ```
 
-Column {.tabset}
+```{r, echo=FALSE}
+p_car_rates <- cor.test(employment_rates$mean_walk, employment_rates$TotEmp, method = "pearson")$p.value
+rho_car_rates <- cor.test(employment_rates$mean_walk, employment_rates$TotEmp, method = "pearson")$estimate
+```
+
+Column {data-width=450 .tabset .tabset-fade}
 -------------------------------------
 ### About 
 
-This plot shows the relationship between walkability and employment rates.
+This plot shows the relationship between walkability and employment rates. Only data for capital cities is shown and only some capital cities were included in the dataset. 
+
+**Research Question:** How does walkability impact employment rates? 
 
 **Hypothesis:** I hypothesize that unemployment rates will be greater in less walkable areas. 
 
 **Conclusions:** Walkability and unemployment rates have a significant, negative relationship. 
 
-### Unemployment Rates Plot v1
+### v1
 ```{r, echo=FALSE}
 employment_rates_plot1 <- employment_rates %>% 
   ggplot(aes(x = mean_walk, y = TotEmp))+
@@ -262,7 +274,7 @@ employment_rates_plot1 <- employment_rates %>%
 employment_rates_plot1
 ```
 
-### Unemployment Rates Plot v2
+### v2
 ```{r, echo=FALSE}
 employment_rates_plot2 <- employment_rates %>% 
   ggplot(aes(x = mean_walk, y = TotEmp))+
@@ -273,11 +285,11 @@ employment_rates_plot2
 ```
 
 
-Number of Cars 
+Cars 
 ====================
 Completed by Cheyna Warner
 
-Column {.tabset}
+Column {data-width=550 .tabset .tabset-fade}
 -------------------------------------
 
 ```{r, echo=FALSE}
@@ -290,7 +302,7 @@ car_rates <- walkability %>%
 car_rates <- car_rates[!duplicated(car_rates$CBSA_Name), ]
 ```
 
-### Households with > 1 cars
+### How does walkability impact the number of cars a household has? 
 ```{r, echo=FALSE}
 car_rates_plot_final <- car_rates %>% 
   ggplot(aes(x = mean_walk, y = car))+
@@ -300,7 +312,9 @@ car_rates_plot_final <- car_rates %>%
   labs(title = "Households have more cars in more walkable cities",
        x= "Walkability",
        y = "Number of Households with > 1 car")+
-  theme(text = element_text(family = "Quicksand"))
+  theme(text = element_text(family = "Quicksand"))+
+  theme(legend.position="bottom")+
+  theme(legend.key.size = unit(0.2, "cm"))
 
 car_rates_plot_final
 ```
@@ -311,18 +325,20 @@ rho_car_rates <- cor.test(car_rates$mean_walk, car_rates$car, method = "pearson"
 ```
 
 
-Column {.tabset}
+Column {data-width=450 .tabset .tabset-fade}
 -------------------------------------
 ### About
 
-This graph shows the relationship between walkability and number of households that own at least 1 car.
+This graph shows the relationship between walkability and number of households that own at least 1 car. Only data for capital cities is shown and only some capital cities were included in the dataset. 
+
+**Research Question:** How does walkability impact the number of cars a household has? 
 
 **Hypothesis:** I hypothesize that people who live in walkable areas will have fewer cars. 
 
 **Conclusions:** Walkability and number of cars have a significant, positive relationship. 
 
 
-### Cars plot v1
+### v1
 
 ```{r, echo=FALSE}
 car_rates_plot1 <- car_rates %>% 
@@ -333,7 +349,7 @@ car_rates_plot1 <- car_rates %>%
 car_rates_plot1
 ```
 
-### Cars plot v2
+### v2
 
 ```{r, echo=FALSE}
 car_rates_plot2 <- car_rates %>% 
@@ -344,11 +360,11 @@ car_rates_plot2 <- car_rates %>%
 car_rates_plot2
 ```
 
-Pedestrian crash data and Walkability 
+Crashes
 =====================================
 Completed by Erika Davis
 
-Column {.tabset}
+Column {.tabset .tabset-fade}
 --------------------------------------
 ### What is the relationship between walkability and pedestrian crash data? 
 
@@ -396,7 +412,7 @@ ggplot(crash_df, aes(x = mean_walk, y = total_fatals)) +
 
 ```
 
-Column {.tabset}
+Column {.tabset .tabset-fade}
 -------------------------------------
 
 ### Do rural or urban places have more traffic fatalities? 
@@ -418,7 +434,7 @@ ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
   theme_minimal()
 ```
 
-Column {.tabset}
+Column {.tabset .tabset-fade}
 -------------------------------------
 ### Do rural or urban states have more traffic fatalities? 
 
