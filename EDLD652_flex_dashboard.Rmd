@@ -234,7 +234,7 @@ employment_rates_plot <- employment_rates %>%
   geom_point(aes(color = City)) +
   geom_smooth(method ="lm", color = "black", fill = "pink")+
   theme_minimal()+
-  labs(title = "Walkable cities experiences lower rates of unemployment",
+  labs(title = "Walkable cities experience lower rates of unemployment",
        x= "Walkability",
        y = "Employment Rate")+
   theme(text = element_text(family = "Quicksand")) #make font macth the dashboard 
@@ -248,9 +248,9 @@ Column {.tabset}
 
 This plot shows the relationship between walkability and employment rates.
 
-Hypothesis: I hypothesize that unemployment rates will be greater in less walkable areas. 
+**Hypothesis:** I hypothesize that unemployment rates will be greater in less walkable areas. 
 
-Conclusions: Walkability and unemployment rates have a significant, negative relationship. 
+**Conclusions:** Walkability and unemployment rates have a significant, negative relationship. 
 
 ### Unemployment Rates Plot v1
 ```{r, echo=FALSE}
@@ -299,7 +299,7 @@ car_rates_plot_final <- car_rates %>%
   theme_minimal()+
   labs(title = "Households have more cars in more walkable cities",
        x= "Walkability",
-       y = "Number of Households wiith > 1 car")+
+       y = "Number of Households with > 1 car")+
   theme(text = element_text(family = "Quicksand"))
 
 car_rates_plot_final
@@ -317,9 +317,9 @@ Column {.tabset}
 
 This graph shows the relationship between walkability and number of households that own at least 1 car.
 
-Hypothesis: I hypothesize that people who live in walkable areas will have fewer cars. 
+**Hypothesis:** I hypothesize that people who live in walkable areas will have fewer cars. 
 
-Conclusions: Walkability and number of cars have a significant, positive relationship. 
+**Conclusions:** Walkability and number of cars have a significant, positive relationship. 
 
 
 ### Cars plot v1
