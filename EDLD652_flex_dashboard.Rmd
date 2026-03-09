@@ -94,7 +94,7 @@ Column {.sidebar}
 ==========================
 **About Our Project**
 ---------------
-This project combines 2019 data from the Smart Location Database and Pedestrian Crash Data to provide a snapshot of how walkability infleunces multiple facets of life. Links to each database can be found below. 
+This project combines 2019 data from the [Smart Location Database](https://catalog.data.gov/dataset/smart-location-database8) and [National Highway Safety Administration Pedestrian Crash Data](https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/) to provide a snapshot of how walkability influences multiple facets of life. We were most interested on seeing if city walkability is related to a number of things, including employment, average number of cars owned, average wages, and combining the Smart Location Data with the Pedestrian Crash data to see if there is a relationship between each. Links to each database can be found below. 
 
 U.S. Environmental Protection Agency Smart Location Database (with Walkability Index)
 ------------------------
@@ -229,7 +229,7 @@ employment_rates <- walkability %>%
 employment_rates <- employment_rates[!duplicated(employment_rates$CBSA_Name), ]
 ```
 
-### How does walkability impact employment rates?
+### How is walkability related to employment rates? 
 ```{r, echo=FALSE}
 
 employment_rates_plot <- employment_rates %>% 
@@ -258,7 +258,7 @@ Column {data-width=450 .tabset .tabset-fade}
 
 This plot shows the relationship between walkability and employment rates. Only data for capital cities is shown and only some capital cities were included in the dataset. 
 
-**Research Question:** How does walkability impact employment rates? 
+**Research Question:** How is walkability related to employment rates? 
 
 **Hypothesis:** I hypothesize that unemployment rates will be greater in less walkable areas. 
 
@@ -302,7 +302,7 @@ car_rates <- walkability %>%
 car_rates <- car_rates[!duplicated(car_rates$CBSA_Name), ]
 ```
 
-### How does walkability impact the number of cars a household has? 
+### Do households in walkable areas own fewer cars? 
 ```{r, echo=FALSE}
 car_rates_plot_final <- car_rates %>% 
   ggplot(aes(x = mean_walk, y = car))+
@@ -331,7 +331,7 @@ Column {data-width=450 .tabset .tabset-fade}
 
 This graph shows the relationship between walkability and number of households that own at least 1 car. Only data for capital cities is shown and only some capital cities were included in the dataset. 
 
-**Research Question:** How does walkability impact the number of cars a household has? 
+**Research Question:** Do households in walkable areas own fewer cars? 
 
 **Hypothesis:** I hypothesize that people who live in walkable areas will have fewer cars. 
 
@@ -360,11 +360,11 @@ car_rates_plot2 <- car_rates %>%
 car_rates_plot2
 ```
 
-Crashes
+Walkability and Pedestrian Crashes
 =====================================
 Completed by Erika Davis
 
-Column {.tabset .tabset-fade}
+Column {data-width=550 .tabset .tabset-fade}
 --------------------------------------
 ### What is the relationship between walkability and pedestrian crash data? 
 
@@ -410,10 +410,54 @@ ggplot(crash_df, aes(x = mean_walk, y = total_fatals)) +
   ) +
   theme_minimal()
 
+crashmodel <- lm(total_fatals ~ mean_walk, data = crash_df)
+
+
 ```
 
-Column {.tabset .tabset-fade}
--------------------------------------
+Column {data-width=450 .tabset .tabset-fade}
+--------------------------------------
+
+### About
+
+This graph shows the relationship between how walkable cities are, and how many pedestrian fatalities happened in one year (2019). Data for walkability was originally by city, so was recoded to be by state, and not all states were represented in the dataset. According to the [EPA](https://www.epa.gov/smartgrowth/smart-location-mapping), this data was only available in places that share transit data in [GTFS format](https://developers.google.com/transit/gtfs/).
+
+**Research Question:** Is there a relationship between walkability of states and the amount of pedestrian fatalities?
+
+**Hypothesis:** I hypothesize that more walkable states will have less pedestrian fatalities.
+
+**Conclusions:** There is no relationship between state walkability and the amount of pedestrian fatalities in one year. A simple linear regression was run to test this (*t*(19) = -0.17, *p* = 0.86).
+
+### v1 
+```{r, echo=FALSE}
+
+ggplot(crash_df, aes(x = mean_walk, y = total_fatals)) +
+  geom_point(size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm") + 
+  theme_minimal()
+
+```
+
+### v2 
+```{r, echo=FALSE}
+ ggplot(crash_df, aes(x = mean_walk, y = total_fatals)) +
+  geom_point(size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", color = "red", linetype = "dashed", se = FALSE) +
+  labs(
+    title = "Walkability vs. Pedestrian Fatalities by State",
+    subtitle = "Labels shown for statistical extremes (top/bottom 5%)",
+    x = "Walkability Score",
+    y = "Total Fatalities"
+  ) +
+  theme_minimal()
+```
+
+Rural vs. Urban Pedestrian Crashes
+=====================================
+Completed by Erika Davis
+
+Column {data-width=550 .tabset .tabset-fade}
+--------------------------------------
 
 ### Do rural or urban places have more traffic fatalities? 
 
@@ -432,12 +476,25 @@ ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
     fill = "Legend"
   ) +
   theme_minimal()
+
+ruralmodel <- aov(FATALS ~ RUR_URBNAME, data = crash_filtered)
+
+
 ```
 
-Column {.tabset .tabset-fade}
+Column {data-width=450 .tabset .tabset-fade}
 -------------------------------------
-### Do rural or urban states have more traffic fatalities? 
+### About
 
+This graph shows the relationship between whether a place is classified as rural or urban, and the total pedestrian car crash fatalities in one year.
+
+**Research Question:** Do rural or urban places have more pedestrian fatalities? 
+
+**Hypothesis:** I hypothesize that urban places will show more pedestrian fatalities.
+
+**Conclusions:** Urban places showed more pedestrian fatalities than rural places. A one-way ANOVA was used to determine this relationship (*F*(33377) = 173.6, *p* < 0.001).
+
+### v1
 ```{r, echo=FALSE}
 ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
   geom_bar(stat = "summary", fun = "sum") +
@@ -456,5 +513,6 @@ ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
     axis.title.x = element_blank(),
     axis.ticks.x = element_blank()
   )
+
 ```
 
