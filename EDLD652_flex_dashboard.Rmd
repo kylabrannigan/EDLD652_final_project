@@ -286,7 +286,7 @@ employment_rates_plot <- employment_rates %>%
   geom_point(aes(color = City)) +
   geom_smooth(method ="lm", color = "black", fill = "pink")+
   theme_minimal()+
-  labs(title = "Walkable cities experience lower rates of unemployment",
+  labs(title = "Walkable cities experience lower rates of employment",
        x= "Walkability",
        y = "Employment Rate")+
   theme(text = element_text(family = "Quicksand")) + #make font macth the dashboard 
