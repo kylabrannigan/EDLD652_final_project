@@ -108,7 +108,7 @@ https://www.nhtsa.gov/file-downloads?p=nhtsa/downloads/FARS/
 
 Wage
 ==========================
-Completed by Kyla Brannigan and Cheyna Warner
+Completed by Kyla Brannigan
 
 Column {.tabset .tabset-fade}
 -------------------------------------
@@ -309,9 +309,9 @@ This plot shows the relationship between walkability and employment rates. Only 
 
 **Research Question:** How is walkability related to employment rates? 
 
-**Hypothesis:** I hypothesize that unemployment rates will be greater in less walkable areas. 
+**Hypothesis:** I hypothesize that employment rates will be lower in less walkable areas. 
 
-**Conclusions:** Walkability and unemployment rates have a significant, negative relationship. 
+**Conclusions:** Walkability and employment rates have a significant, negative relationship. Therefore, more walkable areas have lower employment rates (aka higher unemployment rates).
 
 ### v1
 ```{r, echo=FALSE}
