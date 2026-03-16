@@ -526,6 +526,7 @@ ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
   ) +
   theme_minimal()
 
+
 ruralmodel <- aov(FATALS ~ RUR_URBNAME, data = crash_filtered)
 
 
@@ -535,7 +536,7 @@ Column {data-width=450 .tabset .tabset-fade}
 -------------------------------------
 ### About
 
-This graph shows the relationship between whether a place is classified as rural or urban, and the total pedestrian car crash fatalities in one year.
+This graph shows the relationship between whether a place is classified as rural or urban, and the total pedestrian car crash fatalities in one year. As we did not have data for crashes that did not result in fatalities, this is just representative of the total number of fatalities and whether they took place in a rural or urban place.
 
 **Research Question:** Do rural or urban places have more pedestrian fatalities? 
 
@@ -543,7 +544,7 @@ This graph shows the relationship between whether a place is classified as rural
 
 **Conclusions:** Urban places showed more pedestrian fatalities than rural places. A one-way ANOVA was used to determine this relationship (*F*(33377) = 173.6, *p* < 0.001).
 
-### v1
+### first version
 ```{r, echo=FALSE}
 ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
   geom_bar(stat = "summary", fun = "sum") +
@@ -562,6 +563,54 @@ ggplot(crash_filtered, aes(x = RUR_URBNAME, y = FATALS, fill = RUR_URBNAME)) +
     axis.title.x = element_blank(),
     axis.ticks.x = element_blank()
   )
+
+```
+### Rural fatalities by state 
+```{r, echo=FALSE}
+state_totals <- crash_filtered %>%
+  group_by(STATENAME, RUR_URBNAME) %>%
+  summarise(total_fatalities = sum(FATALS), .groups = "drop")
+
+ggplot(filter(state_totals, RUR_URBNAME == "Rural"),
+       aes(x = reorder(STATENAME, total_fatalities), y = total_fatalities)) +
+  geom_col(fill = "forestgreen") +
+  coord_flip() +
+  labs(title = "Rural Fatalities by State", x = "State", y = "Total Fatalities") +
+  theme_minimal()
+```
+### Urban fatalities by state
+```{r}
+ggplot(filter(state_totals, RUR_URBNAME == "Urban"),
+       aes(x = reorder(STATENAME, total_fatalities), y = total_fatalities)) +
+  geom_col(fill = "pink") +
+  coord_flip() +
+  labs(title = "Urban Fatalities by State", x = "State", y = "Total Fatalities") +
+  theme_minimal()
+```
+### Combined plot
+```{r}
+state_totals <- state_totals %>%
+  mutate(plot_value = ifelse(RUR_URBNAME == "Rural",
+                             -total_fatalities,
+                             total_fatalities))
+state_totals <- state_totals %>%
+  group_by(STATENAME) %>%
+  mutate(total_state = sum(total_fatalities)) %>%
+  ungroup()
+
+ggplot(state_totals,
+      aes(x = reorder(STATENAME, total_state), y = plot_value, fill = RUR_URBNAME)) +
+  geom_col() +
+  coord_flip() +
+  scale_fill_manual(values = c("Rural" = "forestgreen", "Urban" = "pink")) +
+  scale_y_continuous(labels = abs) +
+  labs(
+    title = "Fatalities by State: Rural vs Urban",
+    x = "State",
+    y = "Total Fatalities",
+    fill = "Location Type"
+  ) +
+  theme_minimal()
 
 ```
 
